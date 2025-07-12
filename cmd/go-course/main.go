@@ -10,7 +10,7 @@ func main() {
 
 	// Пример использования функции для конвертации валют
 	// Конвертация 5000 KZT в USD
-	converted, err := internal.ConvertKZTTo(decimal.NewFromFloat(5000), "USD")
+	converted, err := internal.ConvertKZT(decimal.NewFromFloat(5000), "to", "USD")
 	if err == nil {
 		fmt.Println("В USD:", converted)
 	} else {
@@ -18,7 +18,7 @@ func main() {
 	}
 
 	// Конвертация 17 EUR в KZT
-	converted2, err2 := internal.ConvertToKZT(decimal.NewFromFloat(17), "EUR")
+	converted2, err2 := internal.ConvertKZT(decimal.NewFromFloat(17), "from", "EUR")
 	if err2 == nil {
 		fmt.Println("В KZT:", converted2)
 	} else {

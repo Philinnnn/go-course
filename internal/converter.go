@@ -7,6 +7,7 @@ import (
 )
 
 var ErrUnsupportedCurrency = errors.New("unsupported currency")
+var ErrInvalidDirection = errors.New("invalid conversion direction")
 
 // Курсы валют на 12.07.2025
 const (
@@ -28,18 +29,16 @@ func getKZTRate(currency string) (decimal.Decimal, error) {
 	}
 }
 
-func ConvertKZTTo(money decimal.Decimal, currency string) (decimal.Decimal, error) {
+func ConvertKZT(money decimal.Decimal, dir string, currency string) (decimal.Decimal, error) {
 	rate, err := getKZTRate(currency)
 	if err != nil {
 		return decimal.Zero, err
 	}
-	return money.Div(rate).Round(2), nil
-}
-
-func ConvertToKZT(money decimal.Decimal, currency string) (decimal.Decimal, error) {
-	rate, err := getKZTRate(currency)
-	if err != nil {
-		return decimal.Zero, err
+	if dir == "to" {
+		return money.Div(rate).Round(2), nil
+	} else if dir == "from" {
+		return money.Mul(rate).Round(2), nil
+	} else {
+		return decimal.Zero, ErrInvalidDirection
 	}
-	return money.Mul(rate).Round(2), nil
 }
