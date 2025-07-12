@@ -8,6 +8,7 @@ import (
 
 var ErrUnsupportedCurrency = errors.New("unsupported currency")
 
+// Курсы валют на 12.07.2025
 const (
 	USD_KZT_rate = 522.37
 	EUR_KZT_rate = 610.93
