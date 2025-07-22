@@ -6,12 +6,12 @@ import (
 	"go-course/internal/models"
 )
 
-func CreateTerminal(clientID, clientSecret, uuidStr string) (*models.Terminal, error) {
+func CreateTerminal(clientID, clientSecret string, uuid uuid.UUID) (*models.Terminal, error) {
 	t := &models.Terminal{
-		ID:           uuid.New(),
+		ID:           0,
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
-		UUID:         uuidStr,
+		UUID:         uuid,
 	}
 
 	if err := db.DB.Create(t).Error; err != nil {

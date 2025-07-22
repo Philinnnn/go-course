@@ -3,8 +3,8 @@ package models
 import "github.com/google/uuid"
 
 type Terminal struct {
-	ID           uuid.UUID `gorm:"type:uuid;primaryKey"`
+	ID           uint64 `gorm:"primaryKey,autoIncrement"`
 	ClientID     string
 	ClientSecret string
-	UUID         string
+	UUID         uuid.UUID `gorm:"type:uuid;default:gen_random_uuid()"`
 }

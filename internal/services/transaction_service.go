@@ -15,7 +15,7 @@ var allowedTransitions = map[string][]string{
 
 func NewTransaction(terminalID uuid.UUID, orderID string, amount float64) (*models.Transaction, error) {
 	tx := &models.Transaction{
-		ID:            uuid.New(),
+		ID:            0,
 		TerminalID:    terminalID,
 		OrderID:       orderID,
 		Amount:        amount,

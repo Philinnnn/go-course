@@ -6,7 +6,7 @@ import (
 )
 
 type Transaction struct {
-	ID            uuid.UUID `gorm:"type:uuid;primaryKey"`
+	ID            uint64 `gorm:"primaryKey,autoIncrement"`
 	TerminalID    uuid.UUID
 	OrderID       string
 	Amount        float64 `gorm:"type:numeric(12,2)"`
@@ -16,6 +16,5 @@ type Transaction struct {
 	Code          string
 	Message       string
 
-	Terminal  Terminal          `gorm:"foreignKey:TerminalID;constraint:OnDelete:CASCADE"`
-	StatusRef TransactionStatus `gorm:"foreignKey:Status;references:Code;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Terminal Terminal `gorm:"foreignKey:TerminalID;constraint:OnDelete:CASCADE"`
 }

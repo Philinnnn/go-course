@@ -29,9 +29,9 @@ func RegisterTerminalRoutes(router *gin.RouterGroup) {
 // @Router /terminals/ [post]
 func createTerminal(c *gin.Context) {
 	var req struct {
-		ClientID     string `json:"client_id"`
-		ClientSecret string `json:"client_secret"`
-		UUID         string `json:"uuid"`
+		ClientID     string    `json:"client_id"`
+		ClientSecret string    `json:"client_secret"`
+		UUID         uuid.UUID `json:"uuid"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -110,9 +110,9 @@ func updateTerminal(c *gin.Context) {
 	}
 
 	var updated struct {
-		ClientID     string `json:"client_id"`
-		ClientSecret string `json:"client_secret"`
-		UUID         string `json:"uuid"`
+		ClientID     string    `json:"client_id"`
+		ClientSecret string    `json:"client_secret"`
+		UUID         uuid.UUID `json:"uuid"`
 	}
 
 	if err := c.ShouldBindJSON(&updated); err != nil {

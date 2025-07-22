@@ -45,10 +45,11 @@ func Init() {
 	if config.Config.AutoMigrate {
 		err := DB.AutoMigrate(
 			&models.Terminal{},
-			&models.TransactionStatus{},
 			&models.Transaction{},
+			&models.TransactionStatus{},
 		)
 		if err != nil {
+			logger.Error("AutoMigrate error")
 			return
 		}
 		migration.SeedStatuses(DB)
