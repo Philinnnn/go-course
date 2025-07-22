@@ -2,40 +2,33 @@ package main
 
 import (
 	"fmt"
-	"github.com/shopspring/decimal"
-	"go-course/internal"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	_ "go-course/docs"
+	"go-course/internal/config"
+	"go-course/internal/db"
+	"go-course/internal/routes"
 )
 
+// @title Transaction API
+// @version 1.0
+// @description Сервис учёта транзакций мерчантов
+// @host localhost:8080
+// @BasePath /api
 func main() {
+	config.Load()
+	db.Init()
 
-	// Пример использования функции для конвертации валют
-	// Конвертация 5000 KZT в USD
-	converted, err := internal.ConvertKZT(decimal.NewFromFloat(5000), "to", "USD")
-	if err == nil {
-		fmt.Println("В USD:", converted)
-	} else {
-		fmt.Println("Ошибка:", err)
+	router := routes.SetupRouter()
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	err := router.SetTrustedProxies([]string{"127.0.0.1"})
+	if err != nil {
+		panic(fmt.Errorf("failed to set trusted proxies: %w", err))
 	}
 
-	// Конвертация 17 EUR в KZT
-	converted2, err2 := internal.ConvertKZT(decimal.NewFromFloat(17), "from", "EUR")
-	if err2 == nil {
-		fmt.Println("В KZT:", converted2)
-	} else {
-		fmt.Println("Ошибка:", err2)
+	addr := fmt.Sprintf("%s:%d", config.Config.IP, config.Config.Port)
+	if err := router.Run(addr); err != nil {
+		panic(fmt.Errorf("failed to run server: %w", err))
 	}
-
-	// Пример использования функции для получения курса валюты
-	transactions := []map[int]decimal.Decimal{
-		{1: decimal.NewFromFloat(25000.00)},
-		{1: decimal.NewFromFloat(20000.00)},
-		{2: decimal.NewFromFloat(-9800.00)},
-		{3: decimal.NewFromFloat(-1222.22)},
-		{4: decimal.NewFromFloat(-1500.07)},
-		{5: decimal.NewFromFloat(1201.37)},
-		{6: decimal.NewFromFloat(-100.32)},
-		{7: decimal.NewFromFloat(-523.33)},
-	}
-
-	internal.PrintWeeklySummary(transactions)
 }
