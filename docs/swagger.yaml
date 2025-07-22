@@ -1,0 +1,357 @@
+basePath: /api
+definitions:
+  api.createRequest:
+    properties:
+      amount:
+        type: number
+      order_id:
+        type: string
+      terminal_id:
+        type: string
+    type: object
+  api.statusChangeRequest:
+    properties:
+      status:
+        type: string
+    type: object
+  models.Terminal:
+    properties:
+      clientID:
+        type: string
+      clientSecret:
+        type: string
+      id:
+        type: string
+      uuid:
+        type: string
+    type: object
+  models.Transaction:
+    properties:
+      amount:
+        type: number
+      code:
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+      orderID:
+        type: string
+      status:
+        type: string
+      statusChanged:
+        type: string
+      statusRef:
+        $ref: '#/definitions/models.TransactionStatus'
+      terminal:
+        $ref: '#/definitions/models.Terminal'
+      terminalID:
+        type: string
+    type: object
+  models.TransactionStatus:
+    properties:
+      description:
+        type: string
+      status:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Сервис учёта транзакций мерчантов
+  title: Transaction API
+  version: "1.0"
+paths:
+  /terminals/:
+    get:
+      description: Возвращает список всех терминалов
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Terminal'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получение всех терминалов
+      tags:
+      - Терминалы
+    post:
+      consumes:
+      - application/json
+      description: Создаёт новый терминал с client_id, client_secret и uuid
+      parameters:
+      - description: Данные терминала
+        in: body
+        name: terminal
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Terminal'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Создание нового терминала
+      tags:
+      - Терминалы
+  /terminals/{id}:
+    delete:
+      description: Удаляет терминал по ID
+      parameters:
+      - description: UUID терминала
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Удаление терминала
+      tags:
+      - Терминалы
+    get:
+      description: Возвращает терминал по его UUID
+      parameters:
+      - description: UUID терминала
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Terminal'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получение терминала по ID
+      tags:
+      - Терминалы
+    put:
+      consumes:
+      - application/json
+      description: Обновляет client_id, client_secret и uuid по ID
+      parameters:
+      - description: UUID терминала
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Обновлённые данные терминала
+        in: body
+        name: terminal
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Обновление данных терминала
+      tags:
+      - Терминалы
+  /transactions:
+    get:
+      description: Возвращает все транзакции между двумя датами (в формате RFC3339)
+      parameters:
+      - description: Дата начала (RFC3339)
+        in: query
+        name: start
+        required: true
+        type: string
+      - description: Дата окончания (RFC3339)
+        in: query
+        name: end
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Transaction'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить транзакции за период
+      tags:
+      - Транзакции
+    post:
+      consumes:
+      - application/json
+      description: Создаёт новую транзакцию с указанием терминала, заказа и суммы
+      parameters:
+      - description: Данные транзакции
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/api.createRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Transaction'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Создать транзакцию
+      tags:
+      - Транзакции
+  /transactions/{id}:
+    get:
+      description: Возвращает транзакцию по её UUID
+      parameters:
+      - description: UUID транзакции
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Transaction'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Получить транзакцию по ID
+      tags:
+      - Транзакции
+  /transactions/{id}/status:
+    put:
+      consumes:
+      - application/json
+      description: Меняет статус транзакции по правилам переходов
+      parameters:
+      - description: UUID транзакции
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Новый статус транзакции
+        in: body
+        name: status
+        required: true
+        schema:
+          $ref: '#/definitions/api.statusChangeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Transaction'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Изменить статус транзакции
+      tags:
+      - Транзакции
+swagger: "2.0"
