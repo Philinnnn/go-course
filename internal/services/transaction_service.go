@@ -13,10 +13,9 @@ var allowedTransitions = map[string][]string{
 	"CHARGE": {"REFUND"},
 }
 
-func NewTransaction(terminalID uuid.UUID, orderID string, amount float64) (*models.Transaction, error) {
+func NewTransaction(terminalUUID uuid.UUID, orderID string, amount float64) (*models.Transaction, error) {
 	tx := &models.Transaction{
-		ID:            0,
-		TerminalID:    terminalID,
+		TerminalUUID:  terminalUUID,
 		OrderID:       orderID,
 		Amount:        amount,
 		Status:        "NEW",
@@ -27,6 +26,11 @@ func NewTransaction(terminalID uuid.UUID, orderID string, amount float64) (*mode
 	if err := db.DB.Create(tx).Error; err != nil {
 		return nil, err
 	}
+
+	if err := db.DB.Preload("Terminal").First(tx, tx.ID).Error; err != nil {
+		return nil, err
+	}
+
 	return tx, nil
 }
 
@@ -54,12 +58,21 @@ func isStatusChangeAvailable(from, to string) bool {
 	return false
 }
 
-func GetByID(id uuid.UUID, tx *models.Transaction) error {
-	return db.DB.First(tx, "id = ?", id).Error
+func GetByID(id uint64, tx *models.Transaction) error {
+	err := db.DB.Preload("Terminal").First(tx, "id = ?", id).Error
+	if err != nil {
+		return err
+	}
+	if tx.TerminalUUID != uuid.Nil && tx.Terminal.ID == 0 {
+		var term models.Terminal
+		db.DB.First(&term, "uuid = ?", tx.TerminalUUID)
+		tx.Terminal = term
+	}
+	return nil
 }
 
 func GetTransactionsByPeriod(start, end time.Time) ([]models.Transaction, error) {
 	var txs []models.Transaction
-	err := db.DB.Where("created_at BETWEEN ? AND ?", start, end).Find(&txs).Error
+	err := db.DB.Preload("Terminal").Where("created_at BETWEEN ? AND ?", start, end).Find(&txs).Error
 	return txs, err
 }

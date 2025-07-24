@@ -349,7 +349,7 @@ const docTemplate = `{
         },
         "/transactions/{id}": {
             "get": {
-                "description": "Возвращает транзакцию по её UUID",
+                "description": "Возвращает транзакцию по её ID",
                 "produces": [
                     "application/json"
                 ],
@@ -359,8 +359,8 @@ const docTemplate = `{
                 "summary": "Получить транзакцию по ID",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "UUID транзакции",
+                        "type": "integer",
+                        "description": "ID транзакции",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -409,8 +409,8 @@ const docTemplate = `{
                 "summary": "Изменить статус транзакции",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "UUID транзакции",
+                        "type": "integer",
+                        "description": "ID транзакции",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -464,7 +464,7 @@ const docTemplate = `{
                 "order_id": {
                     "type": "string"
                 },
-                "terminal_id": {
+                "terminal_uuid": {
                     "type": "string"
                 }
             }
@@ -487,7 +487,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "uuid": {
                     "type": "string"
@@ -507,7 +507,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "message": {
                     "type": "string"
@@ -521,24 +521,10 @@ const docTemplate = `{
                 "statusChanged": {
                     "type": "string"
                 },
-                "statusRef": {
-                    "$ref": "#/definitions/models.TransactionStatus"
-                },
                 "terminal": {
                     "$ref": "#/definitions/models.Terminal"
                 },
-                "terminalID": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.TransactionStatus": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "status": {
+                "terminalUUID": {
                     "type": "string"
                 }
             }

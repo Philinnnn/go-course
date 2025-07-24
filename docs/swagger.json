@@ -343,7 +343,7 @@
         },
         "/transactions/{id}": {
             "get": {
-                "description": "Возвращает транзакцию по её UUID",
+                "description": "Возвращает транзакцию по её ID",
                 "produces": [
                     "application/json"
                 ],
@@ -353,8 +353,8 @@
                 "summary": "Получить транзакцию по ID",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "UUID транзакции",
+                        "type": "integer",
+                        "description": "ID транзакции",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -403,8 +403,8 @@
                 "summary": "Изменить статус транзакции",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "UUID транзакции",
+                        "type": "integer",
+                        "description": "ID транзакции",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -458,7 +458,7 @@
                 "order_id": {
                     "type": "string"
                 },
-                "terminal_id": {
+                "terminal_uuid": {
                     "type": "string"
                 }
             }
@@ -481,7 +481,7 @@
                     "type": "string"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "uuid": {
                     "type": "string"
@@ -501,7 +501,7 @@
                     "type": "string"
                 },
                 "id": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "message": {
                     "type": "string"
@@ -515,24 +515,10 @@
                 "statusChanged": {
                     "type": "string"
                 },
-                "statusRef": {
-                    "$ref": "#/definitions/models.TransactionStatus"
-                },
                 "terminal": {
                     "$ref": "#/definitions/models.Terminal"
                 },
-                "terminalID": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.TransactionStatus": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "status": {
+                "terminalUUID": {
                     "type": "string"
                 }
             }

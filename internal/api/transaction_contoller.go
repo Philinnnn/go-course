@@ -6,13 +6,14 @@ import (
 	"go-course/internal/models"
 	"go-course/internal/services"
 	"net/http"
+	"strconv"
 	"time"
 )
 
 type createRequest struct {
-	TerminalID string  `json:"terminal_id"`
-	OrderID    string  `json:"order_id"`
-	Amount     float64 `json:"amount"`
+	TerminalUUID string  `json:"terminal_uuid"`
+	OrderID      string  `json:"order_id"`
+	Amount       float64 `json:"amount"`
 }
 
 // CreateTransaction godoc
@@ -33,13 +34,13 @@ func CreateTransaction(c *gin.Context) {
 		return
 	}
 
-	terminalID, err := uuid.Parse(req.TerminalID)
+	terminalUUID, err := uuid.Parse(req.TerminalUUID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid terminal_id"})
 		return
 	}
 
-	tx, err := services.NewTransaction(terminalID, req.OrderID, req.Amount)
+	tx, err := services.NewTransaction(terminalUUID, req.OrderID, req.Amount)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -50,18 +51,18 @@ func CreateTransaction(c *gin.Context) {
 
 // GetTransactionByID godoc
 // @Summary Получить транзакцию по ID
-// @Description Возвращает транзакцию по её UUID
+// @Description Возвращает транзакцию по её ID
 // @Tags Транзакции
 // @Produce json
-// @Param id path string true "UUID транзакции"
+// @Param id path int true "ID транзакции"
 // @Success 200 {object} models.Transaction
 // @Failure 400 {object} map[string]string
 // @Failure 404 {object} map[string]string
 // @Router /transactions/{id} [get]
 func GetTransactionByID(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
 		return
 	}
 
@@ -119,29 +120,27 @@ type statusChangeRequest struct {
 // @Tags Транзакции
 // @Accept json
 // @Produce json
-// @Param id path string true "UUID транзакции"
+// @Param id path int true "ID транзакции"
 // @Param status body statusChangeRequest true "Новый статус транзакции"
 // @Success 200 {object} models.Transaction
 // @Failure 400 {object} map[string]string
 // @Failure 404 {object} map[string]string
 // @Router /transactions/{id}/status [put]
 func ChangeTransactionStatus(c *gin.Context) {
-	id := c.Param("id")
-	var req statusChangeRequest
+	id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ID"})
+		return
+	}
 
+	var req statusChangeRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid input"})
 		return
 	}
 
-	txID, err := uuid.Parse(id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid UUID"})
-		return
-	}
-
 	var tx = &models.Transaction{}
-	if err := services.GetByID(txID, tx); err != nil {
+	if err := services.GetByID(id, tx); err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "transaction not found"})
 		return
 	}

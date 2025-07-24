@@ -29,9 +29,8 @@ func RegisterTerminalRoutes(router *gin.RouterGroup) {
 // @Router /terminals/ [post]
 func createTerminal(c *gin.Context) {
 	var req struct {
-		ClientID     string    `json:"client_id"`
-		ClientSecret string    `json:"client_secret"`
-		UUID         uuid.UUID `json:"uuid"`
+		ClientID     string `json:"client_id"`
+		ClientSecret string `json:"client_secret"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -39,7 +38,7 @@ func createTerminal(c *gin.Context) {
 		return
 	}
 
-	terminal, err := services.CreateTerminal(req.ClientID, req.ClientSecret, req.UUID)
+	terminal, err := services.CreateTerminal(req.ClientID, req.ClientSecret)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create terminal"})
 		return
@@ -76,13 +75,13 @@ func getAllTerminals(c *gin.Context) {
 // @Failure 404 {object} map[string]string
 // @Router /terminals/{id} [get]
 func getTerminalByID(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	uuidVal, err := uuid.Parse(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID"})
 		return
 	}
 
-	terminal, err := services.GetTerminalByID(id)
+	terminal, err := services.GetTerminalByUUID(uuidVal)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Terminal not found"})
 		return

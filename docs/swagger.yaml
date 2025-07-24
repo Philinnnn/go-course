@@ -6,7 +6,7 @@ definitions:
         type: number
       order_id:
         type: string
-      terminal_id:
+      terminal_uuid:
         type: string
     type: object
   api.statusChangeRequest:
@@ -21,7 +21,7 @@ definitions:
       clientSecret:
         type: string
       id:
-        type: string
+        type: integer
       uuid:
         type: string
     type: object
@@ -34,7 +34,7 @@ definitions:
       createdAt:
         type: string
       id:
-        type: string
+        type: integer
       message:
         type: string
       orderID:
@@ -43,18 +43,9 @@ definitions:
         type: string
       statusChanged:
         type: string
-      statusRef:
-        $ref: '#/definitions/models.TransactionStatus'
       terminal:
         $ref: '#/definitions/models.Terminal'
-      terminalID:
-        type: string
-    type: object
-  models.TransactionStatus:
-    properties:
-      description:
-        type: string
-      status:
+      terminalUUID:
         type: string
     type: object
 host: localhost:8080
@@ -286,13 +277,13 @@ paths:
       - Транзакции
   /transactions/{id}:
     get:
-      description: Возвращает транзакцию по её UUID
+      description: Возвращает транзакцию по её ID
       parameters:
-      - description: UUID транзакции
+      - description: ID транзакции
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       produces:
       - application/json
       responses:
@@ -321,11 +312,11 @@ paths:
       - application/json
       description: Меняет статус транзакции по правилам переходов
       parameters:
-      - description: UUID транзакции
+      - description: ID транзакции
         in: path
         name: id
         required: true
-        type: string
+        type: integer
       - description: Новый статус транзакции
         in: body
         name: status

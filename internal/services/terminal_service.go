@@ -6,18 +6,14 @@ import (
 	"go-course/internal/models"
 )
 
-func CreateTerminal(clientID, clientSecret string, uuid uuid.UUID) (*models.Terminal, error) {
+func CreateTerminal(clientID, clientSecret string) (*models.Terminal, error) {
 	t := &models.Terminal{
-		ID:           0,
 		ClientID:     clientID,
 		ClientSecret: clientSecret,
-		UUID:         uuid,
 	}
-
 	if err := db.DB.Create(t).Error; err != nil {
 		return nil, err
 	}
-
 	return t, nil
 }
 
@@ -29,18 +25,18 @@ func GetAllTerminals() ([]models.Terminal, error) {
 	return terminals, nil
 }
 
-func GetTerminalByID(id uuid.UUID) (*models.Terminal, error) {
+func GetTerminalByUUID(uuidVal uuid.UUID) (*models.Terminal, error) {
 	var terminal models.Terminal
-	if err := db.DB.First(&terminal, "id = ?", id).Error; err != nil {
+	if err := db.DB.First(&terminal, "uuid = ?", uuidVal).Error; err != nil {
 		return nil, err
 	}
 	return &terminal, nil
 }
 
-func UpdateTerminal(id uuid.UUID, updated *models.Terminal) error {
-	return db.DB.Model(&models.Terminal{}).Where("id = ?", id).Updates(updated).Error
+func UpdateTerminal(uuidVal uuid.UUID, updated *models.Terminal) error {
+	return db.DB.Model(&models.Terminal{}).Where("uuid = ?", uuidVal).Updates(updated).Error
 }
 
-func DeleteTerminal(id uuid.UUID) error {
-	return db.DB.Delete(&models.Terminal{}, "id = ?", id).Error
+func DeleteTerminal(uuidVal uuid.UUID) error {
+	return db.DB.Delete(&models.Terminal{}, "uuid = ?", uuidVal).Error
 }
