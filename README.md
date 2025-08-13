@@ -1,13 +1,13 @@
 # Go-Course
 
-Сервис для учёта транзакций мерчантов. Реализован на Go, использует PostgreSQL и Gin.
+Go-Course — сервис для учёта транзакций мерчантов на Go с использованием PostgreSQL и Gin.
 
 ## Быстрый старт
 
-1. **Настройте .env**
-   - Пример в файле .env.dist
+1. **Настройте переменные окружения**
+   - Скопируйте `.env.dist` в `.env` и заполните параметры подключения к базе данных.
 
-2. **Соберите и запустите приложение**
+2. **Сборка и запуск**
    - Локально:
      ```bash
      make build
@@ -19,8 +19,8 @@
      docker run -p 8080:8080 go-course-app
      ```
 
-3. **Генерация и просмотр документации**
-   - Swagger:
+3. **Документация**
+   - Сгенерируйте Swagger:
      ```bash
      make swagger
      ```
@@ -30,38 +30,45 @@
 
 - **POST /api/transactions** — создать транзакцию
 - **GET /api/transactions/{id}** — получить транзакцию по ID
-- **GET /api/transactions?start=...&end=...** — получить транзакции за период (формат дат RFC3339)
+- **GET /api/transactions?start=...&end=...** — получить транзакции за период
 - **PUT /api/transactions/{id}/status** — изменить статус транзакции
 - **POST /api/terminals/** — создать терминал
 - **GET /api/terminals/** — получить все терминалы
 - **GET /api/terminals/{id}** — получить терминал по UUID
 - **PUT /api/terminals/{id}** — обновить терминал
 - **DELETE /api/terminals/{id}** — удалить терминал
+- **GET /api/currency/convert** — конвертация валют (демо)
+- **GET /api/currency/rates** — получить текущие курсы валют
 
-## Импорт команд для Postman
+## Пример запроса курсов валют
 
-В файле `api_commands.json` содержатся коллекции запросов для Postman. Импортируйте его через интерфейс Postman для быстрого тестирования API.
+```bash
+curl http://localhost:8080/api/currency/rates
+```
+
+## Postman
+
+Импортируйте коллекцию запросов из файла `api_commands.json` для быстрого тестирования.
 
 ## Миграции
 
-- Автоматические миграции включаются через переменную `AUTO_MIGRATE=true` в `.env`.
+Автоматические миграции включаются через `AUTO_MIGRATE=true` в `.env`.
 
 ## Зависимости
 
 - Go 1.24+
 - PostgreSQL
-- swaggo/swag (для генерации Swagger)
+- swaggo/swag
 - gin-gonic/gin
 - gorm.io/gorm
 
 ## Сборка и пересборка
 
-- Пересборка Swagger-документации:
+- Swagger:
   ```bash
   make swagger
   ```
-- Пересборка Docker-контейнера:
+- Docker:
   ```bash
   make docker-build
   ```
-

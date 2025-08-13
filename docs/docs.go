@@ -15,6 +15,27 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/currency/convert": {
+            "get": {
+                "description": "Запускает конкурентный конвертер валют и возвращает результат",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Валюты"
+                ],
+                "summary": "Конвертация валют (демо)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/terminals/": {
             "get": {
                 "description": "Возвращает список всех терминалов",

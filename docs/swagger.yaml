@@ -55,6 +55,20 @@ info:
   title: Transaction API
   version: "1.0"
 paths:
+  /currency/convert:
+    get:
+      description: Запускает конкурентный конвертер валют и возвращает результат
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Конвертация валют (демо)
+      tags:
+      - Валюты
   /terminals/:
     get:
       description: Возвращает список всех терминалов
