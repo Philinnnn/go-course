@@ -1,8 +1,9 @@
 package routes
 
 import (
-	"github.com/gin-gonic/gin"
 	"go-course/internal/api"
+
+	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter() *gin.Engine {
@@ -17,6 +18,8 @@ func SetupRouter() *gin.Engine {
 
 		terminalsGroup := apiGroup.Group("/terminals")
 		api.RegisterTerminalRoutes(terminalsGroup)
+
+		apiGroup.GET("/currency/convert", api.CurrencyConvert)
 	}
 
 	return r
